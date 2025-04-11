@@ -1,0 +1,302 @@
+openapi: "3.0.0"
+info: 
+  title: CRUD operation
+  description: This is a documentation for CRUD post operation
+  termsOfService: http://example.com/terms
+  contact:
+    name: API support
+    url: http://example.com/terms
+    email: support@example.com
+  license:
+    name: Example License 
+    url: http://example.com/license.html
+  version: 1.0
+  servers:
+    -url: "http:localhost:5500/docs"
+    description: "This is a local server"
+  schemes: [http, https]
+  tags:
+    - name: CRUD
+      description: crud ops
+    - name: Module 2
+      description: crud ops
+ 
+
+paths:
+  /api/posts: 
+    get:
+      tags:
+        -   CRUD
+      summary: Retrievers a list of /api/posts
+      description: This API sends array of objects containing title, description, createAt, updateAt and ID
+      responses:
+        "200":
+          description: successfull responses
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                    type: object 
+                    properties:
+                      _id:
+                        type: string
+                      title: 
+                        type: string
+                      description:
+                        type: string
+                      createAt:
+                        type: string
+                      updateAt:
+                        type: string
+              example:
+              - _id: 67f529c10372cb2d4883271b
+                name: CURD
+                description: Curd - pratice - demo
+                createAt: 2025-04-08T13:50:57.330+00:00
+                updateAt: 2025-04-08T14:42:20.085+00:00
+              - _id: 67f5300b0372cb2d48832734
+                name: mern
+                description: mern pratice
+                createAt: 2025-04-08T14:17:47.020+00:00
+                updateAt: 2025-04-08T14:17:47.020+00:00     
+        "500":
+         description: internal server error
+         content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  example:
+                    message: internal server error
+
+  /api/createpost:
+    post:
+      tags:
+        - CRUD
+      summary: To create a new post 
+      description: create a new post
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "201":
+          description: Post Created successfull
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Post Created successfully
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /api/post/{id}:
+    get: 
+      tags: 
+        - CRUD
+      summary: Retrieves a single post id
+      description: to get a single post by its ID
+      parameters:
+        - name: ID
+          in: path
+          description: The id of the post to Retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfull responses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  post:
+                    $ref: '#/components/schemas/Post'
+        "400":
+          description: Invalid post id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidPost'            
+        "404":
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostNotFound'            
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /api/updatepost/{id}:
+    put:
+      tags: 
+        - CRUD
+      summary: Update the existing post
+      description: to update the existing post by its id
+      parameters:
+        - name: ID
+          in: path
+          description: The id of the post to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Post updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+        "400":
+          description: Invalid post id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidPost'            
+        "404":
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostNotFound'            
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /api/deletepost/{id}:
+    delete:
+      tags: 
+        - CRUD
+      summary: delete the existing post
+      description: to delete the existing post by its id
+      parameters:
+        - name: ID
+          in: path
+          description: The id of the post to delete
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Post Deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  message:
+                    type: String
+        "400":
+          description: Invalid post id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidPost'            
+        "404":
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostNotFound'            
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+
+components:
+  schemas: 
+    InternalServerError:
+      type: object
+      properties: 
+        message:
+          type: string
+    Post:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        createAt:
+          type: string
+        updateAt:
+          type: string
+    InvalidPost:
+      type: object
+      properties:
+        message:
+          type: string
+    PostNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
